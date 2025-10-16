@@ -67,7 +67,7 @@ body {
 
 /* Main Content */
 .main-content {
-    margin-top: 76px;
+    margin-top: 69px;
     min-height: calc(100vh - 76px);
 }
 
@@ -471,6 +471,14 @@ body {
 
 .shadow-lg-custom {
     box-shadow: var(--shadow-lg) !important;
+}
+
+.hero-text-box {
+    background-color: rgba(0, 0, 0, 0.1); /* fundo escuro translúcido para contraste */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    max-width: 600px; /* opcional, para limitar a largura */
 }
 
 /* Print Styles */
