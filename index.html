@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento - Clínica Médica</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-stethoscope me-2"></i>Clínica Médica
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="agendamento.html">Agendamento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="consultas.html">Minhas Consultas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="medicos.html">Médicos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="especialidades.html">Especialidades</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="userName">Usuário</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showProfileModal()">Perfil</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()">Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="row align-items-center min-vh-100">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <h1 class="display-4 fw-bold text-primary mb-4">
+                                Sistema de Agendamento Médico
+                            </h1>
+                            <p class="lead mb-4">
+                                Gerencie suas consultas médicas de forma simples e eficiente. 
+                                Agende, cancele ou reagende consultas com apenas alguns cliques.
+                            </p>
+                            <div class="d-flex gap-3">
+                                <button class="btn btn-primary btn-lg" onclick="showLoginModal()">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                                </button>
+                                <button class="btn btn-outline-primary btn-lg" onclick="showRegisterModal()">
+                                    <i class="fas fa-user-plus me-2"></i>Cadastrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image text-center">
+                            <i class="fas fa-hospital-symbol display-1 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Dashboard (shown when logged in) -->
+        <section id="dashboard" class="dashboard-section" style="display: none;">
+            <div class="container py-5">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="mb-4">Painel de Controle</h2>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <a href="agendamento.html" class="text-decoration-none">
+                            <div class="card h-100 quick-action-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-calendar-plus fa-3x text-primary mb-3"></i>
+                                    <h5 class="card-title">Agendar Consulta</h5>
+                                    <p class="card-text">Marque uma nova consulta médica</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="consultas.html" class="text-decoration-none">
+                            <div class="card h-100 quick-action-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-list-alt fa-3x text-success mb-3"></i>
+                                    <h5 class="card-title">Minhas Consultas</h5>
+                                    <p class="card-text">Visualize e gerencie suas consultas</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="medicos.html" class="text-decoration-none">
+                            <div class="card h-100 quick-action-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-md fa-3x text-info mb-3"></i>
+                                    <h5 class="card-title">Médicos</h5>
+                                    <p class="card-text">Conheça nossa equipe médica</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="especialidades.html" class="text-decoration-none">
+                            <div class="card h-100 quick-action-card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-heartbeat fa-3x text-danger mb-3"></i>
+                                    <h5 class="card-title">Especialidades</h5>
+                                    <p class="card-text">Veja as especialidades disponíveis</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Entrar no Sistema</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginTipo" class="form-label">Tipo de Usuário</label>
+                            <select class="form-select" id="loginTipo" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="paciente">Paciente</option>
+                                <option value="medico">Médico</option>
+                                <option value="secretaria">Secretária</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastrar no Sistema</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="registerNome" class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="registerNome" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="registerEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="registerEmail" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="registerTelefone" class="form-label">Telefone</label>
+                                <input type="tel" class="form-control" id="registerTelefone" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="registerDataNascimento" class="form-label">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="registerDataNascimento" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerTipo" class="form-label">Tipo de Usuário</label>
+                            <select class="form-select" id="registerTipo" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="paciente">Paciente</option>
+                                <option value="medico">Médico</option>
+                                <option value="secretaria">Secretária</option>
+                            </select>
+                        </div>
+                        <div id="medicoFields" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="registerCRM" class="form-label">CRM</label>
+                                    <input type="text" class="form-control" id="registerCRM">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="registerEspecialidade" class="form-label">Especialidade</label>
+                                    <select class="form-select" id="registerEspecialidade">
+                                        <option value="">Selecione uma especialidade</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Meu Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="profileContent">
+                        <!-- Conteúdo do perfil será inserido aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Toastify -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
