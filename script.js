@@ -1,6 +1,3 @@
-// Sistema de Agendamento de Consultas Médicas
-// JavaScript principal com todas as funcionalidades
-
 class SistemaAgendamento {
     constructor() {
         this.usuarios = this.carregarDados('usuarios') || [];
@@ -20,8 +17,6 @@ class SistemaAgendamento {
         this.configurarGSAP();
         this.configurarToastify();
     }
-
-    // ==================== GERENCIAMENTO DE DADOS ====================
     
     salvarDados(chave, dados) {
         localStorage.setItem(chave, JSON.stringify(dados));
@@ -57,8 +52,6 @@ class SistemaAgendamento {
         }
         return horarios;
     }
-
-    // ==================== GERENCIAMENTO DE USUÁRIOS ====================
 
     cadastrarUsuario(dados) {
         const usuario = {
@@ -122,8 +115,6 @@ class SistemaAgendamento {
         this.mostrarToast('Logout realizado com sucesso!', 'info');
     }
 
-    // ==================== GERENCIAMENTO DE CONSULTAS ====================
-
     agendarConsulta(dados) {
         const consulta = {
             id: Date.now(),
@@ -144,7 +135,6 @@ class SistemaAgendamento {
         this.salvarDados('consultas', this.consultas);
         this.mostrarToast('Consulta agendada com sucesso!', 'success');
         
-        // Programar notificação de lembrete
         this.programarNotificacao(consulta);
         
         return consulta;
@@ -181,7 +171,6 @@ class SistemaAgendamento {
         const agora = new Date();
         const tempoParaConsulta = dataConsulta.getTime() - agora.getTime();
         
-        // Notificar 1 dia antes
         const tempoNotificacao = tempoParaConsulta - (24 * 60 * 60 * 1000);
         
         if (tempoNotificacao > 0) {
@@ -195,10 +184,7 @@ class SistemaAgendamento {
         }
     }
 
-    // ==================== INTERFACE E NAVEGAÇÃO ====================
-
     setupEventListeners() {
-        // Login
         document.getElementById('loginForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -210,7 +196,6 @@ class SistemaAgendamento {
             }
         });
 
-        // Cadastro
         document.getElementById('registerForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             const dados = this.coletarDadosCadastro();
@@ -220,7 +205,6 @@ class SistemaAgendamento {
             }
         });
 
-        // Tipo de usuário no cadastro
         document.getElementById('registerTipo')?.addEventListener('change', (e) => {
             const medicoFields = document.getElementById('medicoFields');
             if (e.target.value === 'medico') {
@@ -230,7 +214,6 @@ class SistemaAgendamento {
             }
         });
 
-        // Agendamento
         document.getElementById('agendamentoForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             const dados = this.coletarDadosAgendamento();
@@ -241,23 +224,19 @@ class SistemaAgendamento {
             }
         });
 
-        // Especialidade no agendamento
         document.getElementById('especialidade')?.addEventListener('change', (e) => {
             this.atualizarMedicos(e.target.value);
         });
 
-        // Médico no agendamento
         document.getElementById('medico')?.addEventListener('change', (e) => {
             this.atualizarHorarios(e.target.value);
             this.atualizarInfoConsulta();
         });
 
-        // Data no agendamento
         document.getElementById('data')?.addEventListener('change', () => {
             this.atualizarInfoConsulta();
         });
 
-        // Horário no agendamento
         document.getElementById('horario')?.addEventListener('change', () => {
             this.atualizarInfoConsulta();
         });
@@ -312,7 +291,6 @@ class SistemaAgendamento {
             }
         }
         
-        // Mostrar/ocultar dashboard na página inicial
         const dashboardSection = document.getElementById('dashboard');
         const homeSection = document.getElementById('home');
         
@@ -343,8 +321,6 @@ class SistemaAgendamento {
         }
     }
 
-    // ==================== ATUALIZAÇÃO DE DADOS ====================
-
     inicializarDados() {
         this.atualizarEspecialidadesSelect();
         this.atualizarEspecialidadesGrid();
@@ -364,7 +340,6 @@ class SistemaAgendamento {
             select.appendChild(option);
         });
 
-        // No cadastro de médico
         const selectCadastro = document.getElementById('registerEspecialidade');
         if (selectCadastro) {
             selectCadastro.innerHTML = '<option value="">Selecione uma especialidade</option>';
@@ -383,7 +358,6 @@ class SistemaAgendamento {
 
         select.innerHTML = '<option value="">Selecione um médico</option>';
         
-        // Se não há especialidade selecionada, não mostrar médicos
         if (!especialidadeId) {
             return;
         }
@@ -407,7 +381,6 @@ class SistemaAgendamento {
             });
         }
         
-        // Limpar horários quando médico muda
         this.atualizarHorarios('');
     }
 
@@ -428,7 +401,6 @@ class SistemaAgendamento {
 
         console.log('Atualizando horários para médico:', medico.nome, 'Data:', data);
 
-        // Filtrar horários ocupados
         const horariosOcupados = this.consultas
             .filter(c => c.medicoId === parseInt(medicoId) && 
                         c.data === data && 
@@ -577,8 +549,6 @@ class SistemaAgendamento {
         });
     }
 
-    // ==================== MODAIS E INTERFACE ====================
-
     mostrarModal(modalId) {
         const modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
@@ -630,8 +600,6 @@ class SistemaAgendamento {
         this.mostrarModal('profileModal');
     }
 
-    // ==================== UTILITÁRIOS ====================
-
     formatarData(data) {
         if (!data) return '';
         const date = new Date(data);
@@ -658,10 +626,7 @@ class SistemaAgendamento {
         return textos[status] || status;
     }
 
-    // ==================== CONFIGURAÇÕES EXTERNAS ====================
-
     configurarGSAP() {
-        // Animação de entrada para cards
         gsap.registerPlugin();
         
         gsap.from('.quick-action-card', {
@@ -672,7 +637,6 @@ class SistemaAgendamento {
             ease: 'back.out(1.7)'
         });
 
-        // Animação de hover para cards
         document.querySelectorAll('.quick-action-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
                 gsap.to(card, { duration: 0.3, scale: 1.05, ease: 'power2.out' });
@@ -685,7 +649,6 @@ class SistemaAgendamento {
     }
 
     configurarToastify() {
-        // Configuração global do Toastify
         window.Toastify = window.Toastify || {};
     }
 
@@ -709,16 +672,12 @@ class SistemaAgendamento {
     }
 }
 
-// ==================== FUNÇÕES GLOBAIS ====================
-
 let sistema;
 
-// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     sistema = new SistemaAgendamento();
 });
 
-// Funções de navegação
 function showLoginModal() {
     if (sistema) {
         sistema.mostrarModal('loginModal');
@@ -740,14 +699,12 @@ function showProfileModal() {
 function logout() {
     if (sistema) {
         sistema.logout();
-        // Redirecionar para página inicial após logout
         if (window.location.pathname !== '/index.html' && window.location.pathname !== '/') {
             window.location.href = 'index.html';
         }
     }
 }
 
-// Configurar data mínima para agendamento
 document.addEventListener('DOMContentLoaded', () => {
     const dataInput = document.getElementById('data');
     if (dataInput) {
