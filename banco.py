@@ -1,9 +1,9 @@
 import mysql.connector
 
 conexao =mysql.connector.connect(
-    host="mysql.railway.internal",
+    host="centerbeam.proxy.rlwy.net",
     user="root",
-    password="niZZKBtVchrdhWTgjhoTVILgFVFMTWce",
+    password="LEJrOMomeKcgtjnPZCbberfNXaIqZyid",
     database="railway",
-    port=3306
+    port=40832
 )
