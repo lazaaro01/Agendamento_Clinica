@@ -6,8 +6,6 @@ class SistemaAgendamento {
         this.consultas = this.carregarDados('consultas') || [];
         this.usuarioLogado = this.carregarDados('usuarioLogado') || null;
         this.horariosDisponiveis = this.gerarHorarios();
-        
-        this.inicializar();
     }
 
     inicializar() {
@@ -147,6 +145,7 @@ class SistemaAgendamento {
             consulta.dataCancelamento = new Date().toISOString();
             this.salvarDados('consultas', this.consultas);
             this.mostrarToast('Consulta cancelada com sucesso!', 'warning');
+            this.atualizarConsultasTable();
             return true;
         }
         return false;
@@ -202,13 +201,17 @@ class SistemaAgendamento {
             if (dados) {
                 this.cadastrarUsuario(dados);
                 this.fecharModal('registerModal');
+                this.atualizarMedicosGrid();
+                this.atualizarConsultasTable();
+                this.atualizarEspecialidadesSelect();
             }
         });
-
         document.getElementById('registerTipo')?.addEventListener('change', (e) => {
             const medicoFields = document.getElementById('medicoFields');
+            if (!medicoFields) return;
             if (e.target.value === 'medico') {
                 medicoFields.style.display = 'block';
+                this.atualizarEspecialidadesSelect();
             } else {
                 medicoFields.style.display = 'none';
             }
@@ -224,8 +227,11 @@ class SistemaAgendamento {
             }
         });
 
+        // Selects relacionados ao agendamento
         document.getElementById('especialidade')?.addEventListener('change', (e) => {
             this.atualizarMedicos(e.target.value);
+            // limpa info da consulta
+            this.atualizarInfoConsulta();
         });
 
         document.getElementById('medico')?.addEventListener('change', (e) => {
@@ -254,7 +260,8 @@ class SistemaAgendamento {
 
         if (dados.tipo === 'medico') {
             dados.crm = document.getElementById('registerCRM').value;
-            dados.especialidadeId = parseInt(document.getElementById('registerEspecialidade').value);
+            const espVal = document.getElementById('registerEspecialidade').value;
+            dados.especialidadeId = espVal ? parseInt(espVal) : null;
         }
 
         return dados;
@@ -265,7 +272,7 @@ class SistemaAgendamento {
         const medicoId = parseInt(document.getElementById('medico').value);
         const data = document.getElementById('data').value;
         const horario = document.getElementById('horario').value;
-        const observacoes = document.getElementById('observacoes').value;
+        const observacoes = document.getElementById('observacoes') ? document.getElementById('observacoes').value : '';
 
         if (!especialidadeId || !medicoId || !data || !horario) {
             this.mostrarToast('Preencha todos os campos obrigatórios!', 'error');
@@ -330,15 +337,15 @@ class SistemaAgendamento {
 
     atualizarEspecialidadesSelect() {
         const select = document.getElementById('especialidade');
-        if (!select) return;
-
-        select.innerHTML = '<option value="">Selecione uma especialidade</option>';
-        this.especialidades.forEach(esp => {
-            const option = document.createElement('option');
-            option.value = esp.id;
-            option.textContent = esp.nome;
-            select.appendChild(option);
-        });
+        if (select) {
+            select.innerHTML = '<option value="">Selecione uma especialidade</option>';
+            this.especialidades.forEach(esp => {
+                const option = document.createElement('option');
+                option.value = esp.id;
+                option.textContent = esp.nome;
+                select.appendChild(option);
+            });
+        }
 
         const selectCadastro = document.getElementById('registerEspecialidade');
         if (selectCadastro) {
@@ -381,7 +388,7 @@ class SistemaAgendamento {
             });
         }
         
-        this.atualizarHorarios('');
+        this.atualizarHorarios(''); // limpa horários
     }
 
     atualizarHorarios(medicoId) {
@@ -390,7 +397,7 @@ class SistemaAgendamento {
 
         select.innerHTML = '<option value="">Selecione um horário</option>';
         
-        const data = document.getElementById('data').value;
+        const data = document.getElementById('data') ? document.getElementById('data').value : null;
         if (!data || !medicoId) return;
 
         const medico = this.medicos.find(m => m.id === parseInt(medicoId));
@@ -430,10 +437,10 @@ class SistemaAgendamento {
     }
 
     atualizarInfoConsulta() {
-        const especialidadeId = document.getElementById('especialidade').value;
-        const medicoId = document.getElementById('medico').value;
-        const data = document.getElementById('data').value;
-        const horario = document.getElementById('horario').value;
+        const especialidadeId = document.getElementById('especialidade') ? document.getElementById('especialidade').value : '';
+        const medicoId = document.getElementById('medico') ? document.getElementById('medico').value : '';
+        const data = document.getElementById('data') ? document.getElementById('data').value : '';
+        const horario = document.getElementById('horario') ? document.getElementById('horario').value : '';
 
         const infoDiv = document.getElementById('consultaInfo');
         if (!infoDiv) return;
@@ -550,12 +557,16 @@ class SistemaAgendamento {
     }
 
     mostrarModal(modalId) {
-        const modal = new bootstrap.Modal(document.getElementById(modalId));
+        const el = document.getElementById(modalId);
+        if (!el) return;
+        const modal = new bootstrap.Modal(el);
         modal.show();
     }
 
     fecharModal(modalId) {
-        const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+        const el = document.getElementById(modalId);
+        if (!el) return;
+        const modal = bootstrap.Modal.getInstance(el);
         if (modal) modal.hide();
     }
 
@@ -577,6 +588,7 @@ class SistemaAgendamento {
 
         const modal = document.getElementById('profileModal');
         const content = document.getElementById('profileContent');
+        if (!content) return;
         
         content.innerHTML = `
             <div class="profile-info">
@@ -627,6 +639,7 @@ class SistemaAgendamento {
     }
 
     configurarGSAP() {
+        if (typeof gsap === 'undefined') return;
         gsap.registerPlugin();
         
         gsap.from('.quick-action-card', {
@@ -660,6 +673,11 @@ class SistemaAgendamento {
             info: '#17a2b8'
         };
 
+        if (typeof Toastify === 'undefined') {
+            alert(mensagem);
+            return;
+        }
+
         Toastify({
             text: mensagem,
             duration: duracao,
@@ -674,10 +692,22 @@ class SistemaAgendamento {
 
 let sistema;
 
+// Carregar depois que o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     sistema = new SistemaAgendamento();
+    sistema.inicializar();
+
+    // configurar data mínima do input 'data' (se existir)
+    const dataInput = document.getElementById('data');
+    if (dataInput) {
+        const hoje = new Date();
+        const dataMinima = hoje.toISOString().split('T')[0];
+        dataInput.min = dataMinima;
+        dataInput.value = dataMinima;
+    }
 });
 
+// Funções globais usadas no HTML
 function showLoginModal() {
     if (sistema) {
         sistema.mostrarModal('loginModal');
@@ -704,13 +734,3 @@ function logout() {
         }
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const dataInput = document.getElementById('data');
-    if (dataInput) {
-        const hoje = new Date();
-        const dataMinima = hoje.toISOString().split('T')[0];
-        dataInput.min = dataMinima;
-        dataInput.value = dataMinima;
-    }
-});
