@@ -226,11 +226,8 @@ class SistemaAgendamento {
                 this.atualizarConsultasTable();
             }
         });
-
-        // Selects relacionados ao agendamento
         document.getElementById('especialidade')?.addEventListener('change', (e) => {
             this.atualizarMedicos(e.target.value);
-            // limpa info da consulta
             this.atualizarInfoConsulta();
         });
 
@@ -388,7 +385,7 @@ class SistemaAgendamento {
             });
         }
         
-        this.atualizarHorarios(''); // limpa horários
+        this.atualizarHorarios('');
     }
 
     atualizarHorarios(medicoId) {
@@ -692,12 +689,10 @@ class SistemaAgendamento {
 
 let sistema;
 
-// Carregar depois que o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     sistema = new SistemaAgendamento();
     sistema.inicializar();
 
-    // configurar data mínima do input 'data' (se existir)
     const dataInput = document.getElementById('data');
     if (dataInput) {
         const hoje = new Date();
@@ -707,7 +702,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Funções globais usadas no HTML
 function showLoginModal() {
     if (sistema) {
         sistema.mostrarModal('loginModal');
